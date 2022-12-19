@@ -1,12 +1,9 @@
 import styled from 'styled-components';
-import {useEffect} from 'react';
-import {Link} from 'react-router-dom';
-import {IoMoon, IoMoonOutline} from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 
-import {Container} from './Container';
-import {useDispatch, useSelector} from 'react-redux';
-import {setTheme} from '../store/theme/theme-actions';
-import {clearControls} from '../store/controls/controls-action';
+import { Container } from './Container';
+import { ThemeSwitcher } from '../features/theme/ThemeSwitcher';
+import { useCleanup } from '../features/controls/use-cleanup';
 
 const HeaderEl = styled.header`
   box-shadow: var(--shadow);
@@ -21,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Title = styled(Link).attrs({
-    to: '/',
+  to: '/',
 })`
   color: var(--colors-text);
   font-size: var(--fs-sm);
@@ -29,42 +26,17 @@ const Title = styled(Link).attrs({
   font-weight: var(--fw-bold);
 `;
 
-const ModeSwitcher = styled.div`
-  color: var(--colors-text);
-  font-size: var(--fs-sm);
-  cursor: pointer;
-  text-transform: capitalize;
-`;
-
 export const Header = () => {
-    const theme = useSelector(state => state.theme);
-    const dispatch = useDispatch();
+  const cleanUp = useCleanup();
 
-    const cleanUp = () => dispatch(clearControls());
-
-    const toggleTheme = () => {
-        dispatch(setTheme(theme === 'light' ? 'dark' : 'light'))
-    }
-
-    useEffect(() => {
-        document.body.setAttribute('data-theme', theme);
-    }, [theme]);
-
-    return (
-        <HeaderEl>
-            <Container>
-                <Wrapper>
-                    <Title onClick={cleanUp}>Where is the world?</Title>
-                    <ModeSwitcher onClick={toggleTheme}>
-                        {theme === 'light' ? (
-                            <IoMoonOutline size="14px"/>
-                        ) : (
-                            <IoMoon size="14px"/>
-                        )}{' '}
-                        <span style={{marginLeft: '0.75rem'}}>{theme} Theme</span>
-                    </ModeSwitcher>
-                </Wrapper>
-            </Container>
-        </HeaderEl>
-    );
+  return (
+    <HeaderEl>
+      <Container>
+        <Wrapper>
+          <Title onClick={cleanUp}>Where is the world?</Title>
+          <ThemeSwitcher />
+        </Wrapper>
+      </Container>
+    </HeaderEl>
+  );
 };
